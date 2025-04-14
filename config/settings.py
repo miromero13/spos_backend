@@ -109,9 +109,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'spos_db',
-        'USER': 'milser',
-        'PASSWORD': '12345678',
-        'HOST': 'localhost',
+        'USER': 'spos_db_user',
+        'PASSWORD': 'ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH',
+        'HOST': 'postgresql://spos_db_user:ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH@dpg-cvu7vp9r0fns73fumqj0-a.oregon-postgres.render.com/spos_db',
         'PORT': '5432',
     }
 }
