@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': 'spos_db',
         'USER': 'spos_db_user',
         'PASSWORD': 'ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH',
-        'HOST': 'postgresql://spos_db_user:ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH@dpg-cvu7vp9r0fns73fumqj0-a.oregon-postgres.render.com/spos_db',
+        'HOST': 'dpg-cvu7vp9r0fns73fumqj0-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
