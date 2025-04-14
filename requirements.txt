@@ -8,11 +8,13 @@ django-cors-headers==4.7.0
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
 drf-spectacular==0.28.0
+gunicorn==23.0.0
 idna==3.10
 inflection==0.5.1
 itsdangerous==2.2.0
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
+packaging==24.2
 psycopg==3.2.6
 psycopg-binary==3.2.6
 pycparser==2.22
