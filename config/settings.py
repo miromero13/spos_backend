@@ -162,3 +162,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files output directory (para producción)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+ALLOWED_HOSTS = ['*']
