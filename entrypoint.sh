@@ -13,4 +13,4 @@ echo "🧹 Recolectando archivos estáticos..."
 python manage.py collectstatic --noinput
 
 echo "🚀 Iniciando Gunicorn..."
-gunicorn spos_backend.wsgi:application --bind 0.0.0.0:$PORT
+gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
