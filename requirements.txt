@@ -14,6 +14,7 @@ inflection==0.5.1
 itsdangerous==2.2.0
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
+mailtrap==2.0.1
 packaging==24.2
 psycopg==3.2.6
 psycopg-binary==3.2.6
@@ -21,6 +22,7 @@ pycparser==2.22
 PyJWT==2.9.0
 PyYAML==6.0.2
 referencing==0.36.2
+requests==2.32.3
 rpds-py==0.24.0
 sqlparse==0.5.3
 typing_extensions==4.13.1
