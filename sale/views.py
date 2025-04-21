@@ -121,7 +121,7 @@ class SaleViewSet(viewsets.ModelViewSet):
         except Sale.DoesNotExist:
             return response(404, "Venta no encontrada")
 
-def create(self, request):
+    def create(self, request):
         data = request.data
         cash_register_id = data.get('cash_register')
         customer_id = data.get('customer')

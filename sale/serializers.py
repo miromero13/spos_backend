@@ -13,7 +13,7 @@ class SaleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaleDetail
         fields = '__all__'
-        read_only_fields = ['discount', 'subtotal']
+        read_only_fields = ['discount', 'subtotal', 'sale']
         extra_kwargs = {
             'sale': {'required': False},
         }
@@ -34,7 +34,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['code', 'paid_amount','cash_register', 'customer', 'nit', 'details']
+        fields = '__all__'
         read_only_fields = ['code', 'paid_amount']
         extra_kwargs = {
             'cash_register': {'required': False, 'allow_null': True}
