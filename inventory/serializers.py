@@ -31,6 +31,12 @@ class DiscountSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), write_only=True, source='category'
+    )
+    category = CategorySerializer(read_only=True)
+    discount = DiscountSerializer(read_only=True)
+
     class Meta:
         model = Product
         fields = '__all__'
