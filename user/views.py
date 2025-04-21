@@ -343,7 +343,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrCustomerOrCashier]
 
     def get_queryset(self):
-        return User.objects.filter(is_active=True, role='customer')
+        return User.objects.filter( role='customer')
 
     def create(self, request):
         data = request.data.copy()
