@@ -15,7 +15,7 @@ def verify_token(token, max_age=3600):
 
 def send_verification_email(user):
     token = generate_token(user.email)
-    verify_url = f"http://127.0.0.1:8000/api/auth/verify-email/?token={token}"
+    verify_url = f"https://spos-backend.onrender.com/api/auth/verify-email/?token={token}"
 
     mailtrap_url = "https://sandbox.api.mailtrap.io/api/send/3629848"
     payload = {
