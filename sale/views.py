@@ -264,6 +264,10 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
         user = request.user
 
+         # Verificar si ya hay una caja abierta para el usuario
+        if CashRegister.objects.filter(user=user, closing=None).exists():
+            return response(400, "El usuario ya tiene una caja abierta.")
+
         # Crear la caja
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
@@ -272,18 +276,52 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         return response(400, "Errores de validación", error=serializer.errors)
     
     @extend_schema(
-        summary="Cerrar caja",
-        description="Marca la fecha y hora de cierre en la caja especificada.",
-        responses={200: None}
+        responses={
+            200: StandardResponseSerializerSuccess, 
+            404: StandardResponseSerializerError, 
+            500: StandardResponseSerializerError
+        },
     )
-    @action(detail=True, methods=["post"], url_path="close_register")
-    def close_register(self, request, pk=None):
+    @action(methods=["get"], detail=False, url_path="validate_user_cash_register", permission_classes=[IsAdminOrCashier])
+    def validate_user_cash_register(self, request):
         try:
-            cash_register = self.get_object()
+            user = request.user
+            cash_register = CashRegister.objects.filter(user=user, closing=None).first()
+            if cash_register:
+                return response(
+                    200, 
+                    "El usuario tiene una caja abierta.", 
+                    data={
+                        "id": cash_register.id,
+                        "validate": True,
+                    }
+                )
+            else:
+                return response(200, "El usuario no tiene una caja abierta.", data={"validate": False})
+        except Exception as e:
+            return response(500, f"Error al validar la caja del usuario: {str(e)}")
+
+    @extend_schema(
+        responses={
+            200: SaleDetailSerializer, 
+            404: StandardResponseSerializerError, 
+            500: StandardResponseSerializerError
+        },
+    )
+    @action(detail=False, methods=["get"], url_path="close_current_register", permission_classes=[IsAdminOrCashier])
+    def close_current_register(self, request):
+        try:
+            user = request.user
+            cash_register = CashRegister.objects.filter(user=user, closing=None).first()
+
+            if not cash_register:
+                return response(404, "No se encontró una caja abierta para este usuario.")
+
             if cash_register.closing:
                 return response(400, "La caja ya está cerrada.")
+
             cash_register.close_register()
-            return response(200, "Caja cerrada correctamente")
+            return response(200, "Caja cerrada correctamente.")
         except Exception as e:
             return response(500, f"Error al cerrar la caja: {str(e)}")
 

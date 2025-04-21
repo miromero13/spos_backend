@@ -12,6 +12,7 @@ class CashRegister(BaseModel):
     sales_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     purchases_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    observations = models.TextField(null=True, blank=True)
 
     def close_register(self):
         self.closing = timezone.now()

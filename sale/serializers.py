@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from django.utils import timezone, timezone
+from django.utils import timezone
 from django.db import transaction
 from decimal import Decimal
 
 from sale.models import Sale, SaleDetail, CashRegister
-
+from user.models import User
+from user.serializers import UserSerializer
 
 
 
@@ -107,10 +108,12 @@ class SaleSerializer(serializers.ModelSerializer):
 
 
 class CashRegisterSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = CashRegister
-        fields = ['id', 'user', 'opening', 'closing', 'initial_balance', 'sales_total', 'purchases_total', 'total']
-        read_only_fields = ['id', 'opening', 'closing', 'sales_total', 'purchases_total', 'total']
+        fields = '__all__'
+        read_only_fields = ['id', 'opening', 'closing', 'sales_total', 'purchases_total', 'total', 'user']
     
     def create(self, validated_data):
         # Automatically set opening time to now and set totals to 0
