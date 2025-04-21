@@ -6,13 +6,13 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'ci', 'name', 'phone', 'email', 'password', 'role']
+        fields = ['id', 'ci', 'name', 'phone', 'email', 'password', 'role', 'is_active', 'email_verified']
         extra_kwargs = {
             'password': {'write_only': True},
             'is_active': {'read_only': True},
             'email_verified': {'read_only': True},
         }
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'is_active', 'email_verified']
 
     def validate_ci(self, value):
         if not value.isdigit():
@@ -56,7 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user   
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.EmailField(
+    email = serializers.EmailField(
         error_messages={
             'required': "Correo electrónico es obligatorio.",
             'invalid': "Correo electrónico no válido."

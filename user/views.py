@@ -26,9 +26,9 @@ from config.response import response, StandardResponseSerializerSuccess, Standar
 )
 class LoginAdminView(APIView):
     def post(self, request):
-        email = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(email=email, password=password)
 
         if not user:
             return response(401, "Email o contraseña incorrectos")
@@ -42,9 +42,9 @@ class LoginAdminView(APIView):
             200,
             "Login exitoso",
             data={
-                "access": str(token.access_token),
+                "accessToken": str(token.access_token),
                 "refresh": str(token),
-                "user": UserSerializer(user).data
+                "User": UserSerializer(user).data
             }
         )
 
@@ -59,9 +59,9 @@ class LoginAdminView(APIView):
 )
 class LoginCustomerView(APIView):
     def post(self, request):
-        email = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(email=email, password=password)
 
         if not user:
             return response(401, "Credenciales inválidas")        
@@ -103,7 +103,7 @@ class RegisterCustomerView(APIView):
             return response(
                 201,
                 "Cliente registrado correctamente. Revisa tu correo para activarlo.",
-                data=UserSerializer(user).data  # opcional, si quieres retornar los datos
+                data=UserSerializer(user).data
             )
 
         return response(
@@ -212,7 +212,7 @@ class UserViewSet(viewsets.ModelViewSet):
     )
     def list(self, request):
         try:
-            queryset = User.objects.filter(is_active=True, role__in=['administrator', 'cashier'])
+            queryset = User.objects.filter(is_active=True, role__in=['cashier'])
 
             attr = request.query_params.get('attr')
             value = request.query_params.get('value')
@@ -272,7 +272,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            user = User.objects.get(pk=pk, is_active=True).first()
+            user = User.objects.get(pk=pk, is_active=True)
             if not user:
                 return response(404, "Usuario no encontrado")
             return response(
@@ -289,15 +289,38 @@ class UserViewSet(viewsets.ModelViewSet):
         except User.DoesNotExist:
             return response(404, "Usuario no encontrado")
 
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        allowed_fields = ['ci', 'name', 'phone', 'email', 'role']
+        data = request.data.copy()
+
+        if partial:
+            changed_data = {}
+            for field in allowed_fields:
+                if field in data:
+                    incoming = data[field]
+                    current = getattr(user, field)
+
+                    # Convert to string just to ensure fair comparison
+                    if str(incoming) != str(current):
+                        changed_data[field] = incoming
+
+            if not changed_data:
+                return response(200, "No hay cambios para actualizar")
+
+            serializer = UserSerializer(user, data=changed_data, partial=True)
+        else:
+            # En PUT mandamos todo, sin comparación
+            serializer = UserSerializer(user, data=data)
+
         if serializer.is_valid():
             serializer.save()
             return response(200, "Usuario actualizado", data=serializer.data)
+
         return response(400, "Errores de validación", error=serializer.errors)
+
 
     def destroy(self, request, pk=None):
         try:
-            user = User.objects.get(pk=pk, is_active=True).first()
+            user = User.objects.get(pk=pk, is_active=True)
             if not user:
                 return response(404, "Usuario no encontrado")
             user.is_active = False
