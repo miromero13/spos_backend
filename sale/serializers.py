@@ -6,10 +6,19 @@ from decimal import Decimal
 from sale.models import Sale, SaleDetail, CashRegister
 from user.models import User
 from user.serializers import UserSerializer
+from inventory.models import Product
+from inventory.serializers import ProductSerializer
 
 
 
 class SaleDetailSerializer(serializers.ModelSerializer):
+    # Usamos PrimaryKeyRelatedField para que solo se pase el ID del producto
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    
+    # Usamos el ProductSerializer para mostrar el producto como objeto en la representación (read)
+    product_detail = ProductSerializer(source='product', read_only=True)
+
+    
     class Meta:
         model = SaleDetail
         fields = '__all__'
