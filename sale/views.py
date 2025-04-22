@@ -125,10 +125,10 @@ class SaleViewSet(viewsets.ModelViewSet):
         data = request.data
         cash_register_id = data.get('cash_register')
         customer_id = data.get('customer')
+        print(f"Data: {cash_register_id}")
 
         try:
             # Validar caja
-            cash_register = CashRegister.objects.get(id=cash_register_id)
             if cash_register_id:
                 try:
                     cash_register = CashRegister.objects.get(id=cash_register_id)
@@ -147,8 +147,6 @@ class SaleViewSet(viewsets.ModelViewSet):
 
                 return response(400, "Errores de validación en la venta", error=serializer.errors)
 
-        except CashRegister.DoesNotExist:
-            return response(404, "Caja no encontrada")
         except Exception as e:
             transaction.set_rollback(True)
             return response(500, f"Error al crear la venta: {str(e)}")

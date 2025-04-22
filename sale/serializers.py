@@ -69,7 +69,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         details_data = validated_data.pop('details', [])
-        cash_register = validated_data['cash_register']
+        cash_register = validated_data.get('cash_register')
 
         if not details_data:
             raise serializers.ValidationError("Debe incluir al menos un detalle de venta.")
@@ -109,9 +109,10 @@ class SaleSerializer(serializers.ModelSerializer):
             sale.paid_amount = total_sale_amount
             sale.save()
 
-            cash_register.sales_total += total_sale_amount
-            cash_register.total += total_sale_amount
-            cash_register.save()
+            if cash_register:
+                cash_register.sales_total += total_sale_amount
+                cash_register.total += total_sale_amount
+                cash_register.save()
 
             return sale
 
