@@ -24,7 +24,8 @@ class Product(BaseModel):
     stock = models.PositiveIntegerField(default=0)
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
     sale_price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_active = models.BooleanField(default=True)    
+    is_active = models.BooleanField(default=True)
+    photo_url = models.TextField(blank=True)    
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     discount = models.OneToOneField(Discount, on_delete=models.SET_NULL, null=True, blank=True, related_name='product')
