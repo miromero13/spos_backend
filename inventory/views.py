@@ -3,8 +3,12 @@ from django.db import transaction
 from django.db.models import Q, Case, When, IntegerField, Value as V
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from inventory.models import Product, Category, Discount, Purchase, PurchaseDetail
+from user.recomendations import RecommendationEngine  # Import RecommendationEngine
 from inventory.serializers import ProductSerializer, CategorySerializer, DiscountSerializer, PurchaseSerializer
 from config.response import response, StandardResponseSerializerSuccessList, StandardResponseSerializerError, StandardResponseSerializerSuccess
 from user.permissions import IsAdminOrCustomerOrCashier
@@ -368,6 +372,36 @@ class ProductViewSet(viewsets.ModelViewSet):
             return response(400, "El producto no puede ser eliminado porque tiene stock")
         product.delete()
         return response(200, "Producto eliminado correctamente")
+    
+    @action(detail=True, methods=['get'])
+    def recommendations(self, request, pk=None):
+        # Obtener el producto actual
+        product = self.get_object()
+        
+        # Lógica para obtener productos recomendados
+        # Ejemplo: Productos en la misma categoría
+        recommended_products = Product.objects.filter(category=product.category) \
+            .exclude(id=product.id)[:4] 
+        
+        # Retornar las recomendaciones
+        serializer = ProductSerializer(recommended_products, many=True)
+        return response(200, "Resultados", data=serializer.data)
+        
+class RecommendationAdminView(APIView):
+    def post(self, request):
+        """Endpoint para generar/actualizar recomendaciones"""
+        try:
+            RecommendationEngine.generate_frequent_pairs()
+            RecommendationEngine.generate_content_based_recommendations()
+            return response(
+                200,
+                "Recomendaciones generadas exitosamente"
+            )
+        except Exception as e:
+            return response(
+                500,
+                f"Error al generar recomendaciones: {str(e)}"
+            )
 
 class PurchaseViewSet(viewsets.ModelViewSet):
     queryset = Purchase.objects.all()

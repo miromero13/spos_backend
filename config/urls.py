@@ -19,7 +19,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from user.views import UserViewSet, LoginAdminView, LoginCustomerView, RegisterCustomerView, VerifyEmailView, CheckTokenView, CustomerViewSet
 from sale.views import SaleViewSet, CashRegisterViewSet
-from inventory.views import CategoryViewSet, DiscountViewSet, ProductViewSet, PurchaseViewSet
+from inventory.views import CategoryViewSet, DiscountViewSet, ProductViewSet, PurchaseViewSet, RecommendationAdminView
 from rest_framework.routers import DefaultRouter
 from seed.views import SeedView
 
@@ -44,4 +44,7 @@ urlpatterns = [
     path('api/auth/check-token/', CheckTokenView.as_view(), name='check_token'),           
     path('api/', include(router.urls)),    
     path('api/seed/', SeedView.as_view(), name='seed'),
+    path('products/<str:pk>/recommendations/', ProductViewSet.as_view({'get': 'recommendations'})),
+    path('api/admin/generate_recommendations/', RecommendationAdminView.as_view(), name='generate_recommendations'),
+
 ]

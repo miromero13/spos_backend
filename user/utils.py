@@ -17,11 +17,11 @@ def send_verification_email(user):
     token = generate_token(user.email)
     verify_url = f"https://spos-backend.onrender.com/api/auth/verify-email/?token={token}"
 
-    mailtrap_url = "https://sandbox.api.mailtrap.io/api/send/3629848"
+    mailtrap_url = "https://sandbox.api.mailtrap.io/api/send/3632412"
     payload = {
         "from": {
             "email": "ilseromero35@gmail.com",
-            "name": "Sistema SPOS"
+            "name": "ElectroPos"
         },
         "to": [
             {
@@ -34,7 +34,7 @@ def send_verification_email(user):
     }
 
     headers = {
-        "Authorization": "Bearer 3d3d6ac5d740c67805e96925bb495e58",  # ¡Pon tu token seguro en .env!
+        "Authorization": "Bearer 4f6a82b986812540edfbb670ea171d23",  # ¡Pon tu token seguro en .env!
         "Content-Type": "application/json"
     }
 

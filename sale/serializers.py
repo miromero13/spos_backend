@@ -6,14 +6,23 @@ from decimal import Decimal
 from sale.models import Sale, SaleDetail, CashRegister
 from user.models import User
 from user.serializers import UserSerializer
+from inventory.models import Product
+from inventory.serializers import ProductSerializer
 
 
 
 class SaleDetailSerializer(serializers.ModelSerializer):
+    # Usamos PrimaryKeyRelatedField para que solo se pase el ID del producto
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    
+    # Usamos el ProductSerializer para mostrar el producto como objeto en la representación (read)
+    product_detail = ProductSerializer(source='product', read_only=True)
+
+    
     class Meta:
         model = SaleDetail
         fields = '__all__'
-        read_only_fields = ['discount', 'subtotal']
+        read_only_fields = ['discount', 'subtotal', 'sale']
         extra_kwargs = {
             'sale': {'required': False},
         }
@@ -34,7 +43,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['code', 'paid_amount','cash_register', 'customer', 'nit', 'details']
+        fields = '__all__'
         read_only_fields = ['code', 'paid_amount']
         extra_kwargs = {
             'cash_register': {'required': False, 'allow_null': True}
@@ -60,7 +69,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         details_data = validated_data.pop('details', [])
-        cash_register = validated_data['cash_register']
+        cash_register = validated_data.get('cash_register')
 
         if not details_data:
             raise serializers.ValidationError("Debe incluir al menos un detalle de venta.")
@@ -100,9 +109,10 @@ class SaleSerializer(serializers.ModelSerializer):
             sale.paid_amount = total_sale_amount
             sale.save()
 
-            cash_register.sales_total += total_sale_amount
-            cash_register.total += total_sale_amount
-            cash_register.save()
+            if cash_register:
+                cash_register.sales_total += total_sale_amount
+                cash_register.total += total_sale_amount
+                cash_register.save()
 
             return sale
 

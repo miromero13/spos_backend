@@ -78,7 +78,8 @@ class LoginCustomerView(APIView):
             "Login cliente exitoso",
             data={
                 "access": str(token.access_token),
-                "refresh": str(token)
+                "refresh": str(token),
+                "user": UserSerializer(user).data
             }
         )
 

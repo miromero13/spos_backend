@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from config.models import BaseModel
 from django.db import models
+from inventory.models import Product
 
 class UserManager(BaseUserManager):
     def create_user(self, ci, email, name, phone, role, password=None):
@@ -47,3 +48,33 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.name} ({self.role})"
+
+# models.py
+class ProductRecommendation(models.Model):
+    source_product = models.ForeignKey(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name='recommendations_as_source'
+    )
+    recommended_product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='recommendations_as_target'
+    )
+    score = models.FloatField(default=0.0)
+    recommendation_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('frequently_bought', 'Frecuentemente comprados juntos'),
+            ('category', 'Misma categoría'),
+            ('complementary', 'Complementario')
+        ]
+    )
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('source_product', 'recommended_product')
+        indexes = [
+            models.Index(fields=['source_product', 'score']),
+            models.Index(fields=['recommended_product', 'score'])
+        ]
