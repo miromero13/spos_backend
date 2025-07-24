@@ -67,31 +67,10 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'ElectroPos API',
-    'DESCRIPTION': 'API para sistema de punto de venta de productos electrónicos',
+    'TITLE': 'Spos API',
+    'DESCRIPTION': 'Documentación de tu API',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
     'SECURITY': [{'jwtAuth': []}],
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SCHEMA_PATH_PREFIX': '/api/',
-    'TAGS': [
-        {
-            'name': 'Autenticación',
-            'description': 'Endpoints para autenticación y gestión de usuarios'
-        },
-        {
-            'name': 'Usuarios',
-            'description': 'Gestión de usuarios del sistema'
-        },
-        {
-            'name': 'Clientes',
-            'description': 'Gestión de clientes'
-        },
-        {
-            'name': 'Categorías',
-            'description': 'Gestión de categorías de productos'
-        },
-    ]
 }
 
 MIDDLEWARE = [
@@ -132,10 +111,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'spos_db',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'spos_db_40ut',
+        'USER': 'spos_db_40ut_user',
+        'PASSWORD': 'JbNadSeCmBa8qxd4kTrX0gexPfVEEgem',
+        'HOST': 'dpg-d212ndmmcj7s73ec3ka0-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
