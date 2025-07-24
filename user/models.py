@@ -39,7 +39,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=20, choices=ROLES)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    email_verified = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['ci', 'name', 'phone', 'role']

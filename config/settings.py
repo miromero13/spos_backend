@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'inventory',
     'sale',
     'seed',
+    'delivery',
+    'payment',
+    'order',
 ]
 
 REST_FRAMEWORK = {
@@ -64,10 +67,31 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Spos API',
-    'DESCRIPTION': 'Documentación de tu API',
+    'TITLE': 'ElectroPos API',
+    'DESCRIPTION': 'API para sistema de punto de venta de productos electrónicos',
     'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
     'SECURITY': [{'jwtAuth': []}],
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    'TAGS': [
+        {
+            'name': 'Autenticación',
+            'description': 'Endpoints para autenticación y gestión de usuarios'
+        },
+        {
+            'name': 'Usuarios',
+            'description': 'Gestión de usuarios del sistema'
+        },
+        {
+            'name': 'Clientes',
+            'description': 'Gestión de clientes'
+        },
+        {
+            'name': 'Categorías',
+            'description': 'Gestión de categorías de productos'
+        },
+    ]
 }
 
 MIDDLEWARE = [
@@ -109,9 +133,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'spos_db',
-        'USER': 'spos_db_user',
-        'PASSWORD': 'ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH',
-        'HOST': 'dpg-cvu7vp9r0fns73fumqj0-a.oregon-postgres.render.com',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

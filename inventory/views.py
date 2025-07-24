@@ -14,6 +14,7 @@ from config.response import response, StandardResponseSerializerSuccessList, Sta
 from user.permissions import IsAdminOrCustomerOrCashier
 
 @extend_schema(
+    tags=['Categorías'],
     request=CategorySerializer,
     responses={
         201: StandardResponseSerializerSuccess,
@@ -131,6 +132,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return response(200, "Categoría eliminada correctamente")
 
 @extend_schema(
+    tags=['Descuentos'],
     request=DiscountSerializer,
     responses={
         201: StandardResponseSerializerSuccess,
@@ -285,6 +287,9 @@ class ProductViewSet(viewsets.ModelViewSet):
             OpenApiParameter(name='order', description='Campo de ordenamiento (ej: +name, -email)', required=False, type=str),
             OpenApiParameter(name='attr', description='Campo para filtrar (ej: name, description)', required=False, type=str),
             OpenApiParameter(name='value', description='Valor del campo a filtrar', required=False, type=str),
+            OpenApiParameter(name='category', description='ID de la categoría para filtrar productos', required=False, type=str),
+            OpenApiParameter(name='search', description='Buscar productos por nombre o descripción', required=False, type=str),
+            OpenApiParameter(name='has_discount', description='Filtrar productos con descuento (true/false)', required=False, type=str),
         ], 
         responses={
             200: StandardResponseSerializerSuccessList,
@@ -294,8 +299,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     )
     def list(self, request, limit=None, offset=0, order=None, attr=None, value=None):
         try:
-            # Query básica para obtener todas las descuentos
+            # Query básica para obtener todos los productos
             queryset = Product.objects.all()
+            
+            # Filtro por categoría
+            category_id = request.query_params.get('category')
+            if category_id:
+                queryset = queryset.filter(category__id=category_id)
+            
+            # Filtro de búsqueda por nombre o descripción
+            search = request.query_params.get('search')
+            if search:
+                queryset = queryset.filter(
+                    Q(name__icontains=search) | Q(description__icontains=search)
+                )
+            
+            # Filtro por productos con descuento
+            has_discount = request.query_params.get('has_discount')
+            if has_discount and has_discount.lower() == 'true':
+                queryset = queryset.filter(discount__isnull=False)
             
             # Filtrado por parámetros adicionales
             if attr and value and hasattr(Product, attr):

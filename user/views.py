@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.decorators import action
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_spectacular.utils import extend_schema, OpenApiParameter
@@ -17,6 +18,7 @@ from .utils import send_verification_email, verify_token
 from config.response import response, StandardResponseSerializerSuccess, StandardResponseSerializerSuccessList, StandardResponseSerializerError
 
 @extend_schema(
+    tags=['Autenticación'],
     request=LoginSerializer,
     responses={
         200: StandardResponseSerializerSuccess,
@@ -50,6 +52,7 @@ class LoginAdminView(APIView):
 
 
 @extend_schema(
+    tags=['Autenticación'],
     request=LoginSerializer,
     responses={
         200: StandardResponseSerializerSuccess,
@@ -85,6 +88,7 @@ class LoginCustomerView(APIView):
 
 
 @extend_schema(
+    tags=['Autenticación'],
     request=UserSerializer,
     responses={
         201: StandardResponseSerializerSuccess,
@@ -95,7 +99,6 @@ class RegisterCustomerView(APIView):
     def post(self, request):
         data = request.data.copy()
         data['role'] = 'customer'
-        data['is_active'] = False
 
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
@@ -114,6 +117,7 @@ class RegisterCustomerView(APIView):
         )
 
 @extend_schema(
+    tags=['Autenticación'],
     parameters=[
         OpenApiParameter(name="token", description="Token de verificación", required=True, type=str)
     ],
@@ -142,6 +146,7 @@ class VerifyEmailView(APIView):
 
 
 @extend_schema(
+    tags=['Autenticación'],
     responses={
         200: UserSerializer,
         403: StandardResponseSerializerError
@@ -170,6 +175,7 @@ class CheckTokenView(APIView):
     
 
 @extend_schema(
+    tags=['Usuarios'],
     responses={
         200: UserSerializer,        
         400: StandardResponseSerializerError,

@@ -44,6 +44,9 @@ urlpatterns = [
     path('api/auth/check-token/', CheckTokenView.as_view(), name='check_token'),           
     path('api/', include(router.urls)),    
     path('api/seed/', SeedView.as_view(), name='seed'),
+    path('api/delivery/', include('delivery.urls')),
+    path('api/orders/', include('order.urls')),
+    path('api/payments/', include('payment.urls')),
     path('products/<str:pk>/recommendations/', ProductViewSet.as_view({'get': 'recommendations'})),
     path('api/admin/generate_recommendations/', RecommendationAdminView.as_view(), name='generate_recommendations'),
 
