@@ -108,10 +108,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'spos_db',
-        'USER': 'spos_db_user',
-        'PASSWORD': 'ZGbdIW2Z95ppoj7uYaYET6xMdXvWGReH',
-        'HOST': 'dpg-cvu7vp9r0fns73fumqj0-a.oregon-postgres.render.com',
+        'NAME': 'spos_db_40ut',
+        'USER': 'spos_db_40ut_user',
+        'PASSWORD': 'JbNadSeCmBa8qxd4kTrX0gexPfVEEgem',
+        'HOST': 'dpg-d212ndmmcj7s73ec3ka0-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
