@@ -16,12 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from user.views import UserViewSet, LoginAdminView, LoginCustomerView, RegisterCustomerView, VerifyEmailView, CheckTokenView, CustomerViewSet
 from sale.views import SaleViewSet, CashRegisterViewSet
 from inventory.views import CategoryViewSet, DiscountViewSet, ProductViewSet, PurchaseViewSet, RecommendationAdminView
 from rest_framework.routers import DefaultRouter
 from seed.views import SeedView
+
+def redirect_to_docs(request):
+    return redirect('/api/docs/')
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='User')
@@ -35,6 +39,7 @@ router.register(r'purchases', PurchaseViewSet, basename='Purchase')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('docs/', redirect_to_docs, name='docs_redirect'),  # Redirección desde /docs/ a /api/docs/
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'), 
     path('api/auth/login-admin/', LoginAdminView.as_view(), name='login_admin'),
@@ -44,6 +49,9 @@ urlpatterns = [
     path('api/auth/check-token/', CheckTokenView.as_view(), name='check_token'),           
     path('api/', include(router.urls)),    
     path('api/seed/', SeedView.as_view(), name='seed'),
+    path('api/delivery/', include('delivery.urls')),
+    path('api/orders/', include('order.urls')),
+    path('api/payments/', include('payment.urls')),
     path('products/<str:pk>/recommendations/', ProductViewSet.as_view({'get': 'recommendations'})),
     path('api/admin/generate_recommendations/', RecommendationAdminView.as_view(), name='generate_recommendations'),
 
